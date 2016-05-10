@@ -89,28 +89,27 @@ public class Transmit implements RijndaelMethods {
 
 	}
 
-	public byte[][] KeyExpansion(byte[][] roundkey) {
-
-		byte[] wordsfirstcol = new byte[roundkey.length];
-		for (int i = 0; i < roundkey.length; i++) {
-			wordsfirstcol[i] = roundkey[i][0];
+	public byte[][] KeyExpansion(byte[][] words, byte[] roundconstant) {
+		byte[] wordslastcol = new byte[words.length];
+		for (int i = 0; i < words.length; i++) {
+			wordslastcol[i] = words[i][3];
 
 		}
-		byte top = wordsfirstcol[0];
+		byte top = wordslastcol[0];
 		for (int i = 1; i < 3; i++) {
-			wordsfirstcol[i - 1] = wordsfirstcol[i];
+			wordslastcol[i - 1] = wordslastcol[i];
 		}
-		wordsfirstcol[3] = top;
+		wordslastcol[3] = top;
 
-		byte[] subwordslastcol = SubByteArray(wordsfirstcol);
+		byte[] subwordslastcol = SubByteArray(wordslastcol);
 
-		byte[] newfirstcol = xor(subwordslastcol, roundkey);
+		byte[] newfirstcol = xor(subwordslastcol, roundconstant);
 
 		byte[] thatcol = new byte[4];
 
 		for (int c = 0; c < 4; c++) {
 			for (int r = 0; r < 4; r++) {
-				thatcol[r] = roundkey[r][c];
+				thatcol[r] = words[r][c];
 
 			}
 

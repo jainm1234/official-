@@ -90,7 +90,7 @@ public class Transmit implements RijndaelMethods {
 	}
 
 	public byte[][] KeyExpansion(byte[][] roundkey) {
-
+		 
 		byte[] wordsfirstcol = new byte[roundkey.length];
 		for (int i = 0; i < roundkey.length; i++) {
 			wordsfirstcol[i] = roundkey[i][0];
