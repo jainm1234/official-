@@ -1,4 +1,3 @@
-
 public interface RijndaelMethods {
 	byte[][] RoundKey(byte[][] words);
 
