@@ -107,9 +107,10 @@ public class Transmit implements RijndaelMethods {
 	}
 
 	public void KeyExpansion() {
-
+		
 		byte[][] finishedKey = new byte[4][4];
-
+		
+		
 		byte[] lastColchange = new byte[roundkey.length];
 		for (int i = 0; i < roundkey.length; i++) {
 			lastColchange[i] = roundkey[i][3];
@@ -122,67 +123,70 @@ public class Transmit implements RijndaelMethods {
 		lastColchange[3] = top;
 
 		lastColchange = SubByteArray(lastColchange);
-
+		
 		byte[] roundconstant = new byte[4];
-		for (int i = 0; i < 4; i++) {
-			roundconstant[i] = (byte) Rcon[i + keycounter];
+		for ( int i =0 ; i<4 ; i++)
+		{
+			roundconstant[i] = (byte) Rcon[i + keycounter]; 
 		}
 
-		lastColchange = xor(lastColchange, roundconstant);
+		lastColchange = xor(lastColchange,roundconstant);
 		byte[] firstCol = new byte[4];
-
+		
 		for (int i = 0; i < roundkey.length; i++) {
 			firstCol[i] = roundkey[i][0];
 
 		}
-
-		lastColchange = xor(lastColchange, firstCol);
-
+		
+		lastColchange = xor(lastColchange,firstCol);
+		
+		
 		for (int i = 0; i < roundkey.length; i++) {
-			finishedKey[i][0] = lastColchange[i];
+			finishedKey[i][0]=lastColchange[i];
 
 		}
-
-		byte[] oldsecondcol = new byte[4];
-
+		
+		byte [] oldsecondcol = new byte[4]; 
+		
 		for (int i = 0; i < roundkey.length; i++) {
-			oldsecondcol[i] = roundkey[i][1];
+			oldsecondcol[i] = roundkey[i][1]; 
 
 		}
-
-		byte[] newsecondcol = new byte[4];
-
-		newsecondcol = xor(oldsecondcol, lastColchange);
-
-		byte[] oldthirdcol = new byte[4];
+		
+		byte [] newsecondcol = new byte[4];
+		 
+		newsecondcol = xor(oldsecondcol, lastColchange); 
+		
+		byte [] oldthirdcol = new byte[4]; 
 		for (int i = 0; i < roundkey.length; i++) {
-			oldthirdcol[i] = roundkey[i][2];
+			 oldthirdcol[i]= roundkey[i][2]; 
 
 		}
-		byte[] newthirdcol = new byte[4];
-		newthirdcol = xor(oldthirdcol, newsecondcol);
-
-		byte[] oldfourthcol = new byte[4];
+		byte [] newthirdcol = new byte[4];
+		newthirdcol = xor(oldthirdcol,newsecondcol );
+		
+		byte [] oldfourthcol = new byte[4]; 
 		for (int i = 0; i < roundkey.length; i++) {
-			oldfourthcol[i] = roundkey[i][3];
+			oldfourthcol[i]= roundkey[i][3]; 
 
 		}
-		byte[] newfourthcol = new byte[4];
-		newthirdcol = xor(oldfourthcol, newthirdcol);
-
+		byte [] newfourthcol = new byte[4];
+		newthirdcol = xor(oldfourthcol,newthirdcol);
+	
 		for (int i = 0; i < roundkey.length; i++) {
-			finishedKey[i][1] = newsecondcol[i];
-
-		}
-		for (int i = 0; i < roundkey.length; i++) {
-			finishedKey[i][2] = newthirdcol[i];
+			finishedKey[i][1]=newsecondcol[i];
 
 		}
 		for (int i = 0; i < roundkey.length; i++) {
-			finishedKey[i][3] = newfourthcol[i];
+			finishedKey[i][2]=newthirdcol[i];
 
 		}
-		roundkey = finishedKey;
+		for (int i = 0; i < roundkey.length; i++) {
+			finishedKey[i][3]=newfourthcol[i];
+
+		}
+		roundkey = finishedKey; 
+		
 
 	}
 
