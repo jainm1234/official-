@@ -1,6 +1,5 @@
 public interface RijndaelMethods {
-
-	byte[][] RoundKey(byte[][] wordBox, byte[][] w, int round);
+	byte[][] RoundKey(byte[][] words);
 
 	byte[][] SubBytes(byte[][] words);
 

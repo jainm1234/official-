@@ -1,8 +1,8 @@
 public class Transmit implements RijndaelMethods {
 
 	private int keycounter;
-	private int Nk, Nr;
-	private static byte[][] w;
+	private int Nb, Nk, Nr;
+
 	private byte[][] roundkey;
 	private static int[] subBox = { 0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F,
 			0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76, 0xCA, 0x82,
@@ -28,7 +28,6 @@ public class Transmit implements RijndaelMethods {
 			0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55,
 			0x28, 0xDF, 0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41,
 			0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16 };
-
 	private static int Rcon[] = { 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20,
 			0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e,
 			0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef,
@@ -60,8 +59,9 @@ public class Transmit implements RijndaelMethods {
 
 	}
 
-	public byte[] encrypt(byte[] in, byte[] key) {
+	public byte[] encrypt(byte[] in, byte[][] key) {
 
+		Nb = 4;
 		Nk = key.length / 4;
 		Nr = Nk + 6;
 
@@ -78,8 +78,8 @@ public class Transmit implements RijndaelMethods {
 		byte[] tmp = new byte[in.length + lenght];
 		byte[] bloc = new byte[16];
 
-		w = keyToMatrix(key);
-		w = roundkey;
+		roundkey = key;
+		w = KeyExpansion(key);
 
 		int count = 0;
 
@@ -103,31 +103,6 @@ public class Transmit implements RijndaelMethods {
 		return tmp;
 	}
 
-	public byte[] encryptBloc(byte[] in) {
-		byte[] tmp = new byte[in.length];
-
-		byte[][] state = new byte[4][4];
-
-		for (int i = 0; i < in.length; i++)
-			state[i / 4][i % 4] = in[i % 4 * 4 + i / 4];
-
-		state = RoundKey(state, w, 0);
-		for (int round = 1; round < Nr; round++) {
-			state = SubBytes(state);
-			state = ShiftRows(state);
-			state = MixColumns(state);
-			state = RoundKey(state, w, round);
-		}
-		state = SubBytes(state);
-		state = ShiftRows(state);
-		state = RoundKey(state, w, Nr);
-
-		for (int i = 0; i < tmp.length; i++)
-			tmp[i % 4 * 4 + i / 4] = state[i / 4][i % 4];
-
-		return tmp;
-	}
-
 	// implemented by Jannie and Malvika
 	private byte[] xor(byte[] first, byte[] second) {
 		byte[] out = new byte[first.length];
@@ -138,37 +113,18 @@ public class Transmit implements RijndaelMethods {
 
 	}
 
-	public byte[][] keyToMatrix(byte[] keyString) {
-		byte[][] tmp = new byte[4 * (Nr + 1)][4];
+	public byte[][] RoundKey(byte[][] words) {
 
-		int i = 0;
-		while (i < Nk) {
+		// TODO Auto-generated method stub
 
-			tmp[i][0] = keyString[i * 4];
-			tmp[i][1] = keyString[i * 4 + 1];
-			tmp[i][2] = keyString[i * 4 + 2];
-			tmp[i][3] = keyString[i * 4 + 3];
-			i++;
-		}
-		return tmp;
+		return null;
 
-	}
-
-	// implemented by Jannie and Malvika
-	public byte[][] RoundKey(byte[][] wordBox, byte[][] w, int round) {
-
-		byte[][] tmp = new byte[wordBox.length][wordBox[0].length];
-
-		for (int c = 0; c < 4; c++) {
-			for (int l = 0; l < 4; l++)
-				tmp[l][c] = (byte) (wordBox[l][c] ^ w[round * 4 + c][l]);
-		}
-
-		return tmp;
 	}
 
 	// implemented by Jannie and Malvika
 	public byte[][] SubBytes(byte[][] words) {
+
+		// TODO Auto-generated method stub
 
 		byte[][] temp = new byte[words.length][words[0].length];
 		for (int r = 0; r < words.length; r++) {
@@ -181,7 +137,8 @@ public class Transmit implements RijndaelMethods {
 
 	// implemented by Jannie and Malvika
 	public byte[] SubByteArray(byte[] words) {
-		// substitute hex decimal values with values from sub box
+
+		// TODO Auto-generated method stub
 
 		byte[] temp = new byte[words.length];
 		for (int r = 0; r < words.length; r++) {
@@ -193,9 +150,8 @@ public class Transmit implements RijndaelMethods {
 
 	// implemented by Jannie and Mavlvika
 	public byte[][] ShiftRows(byte[][] words) {
-		// shifts the 1st row by zero, shifts the 2nd row by 1, shifts the 3rd
-		// row by 2
 
+		// TODO Auto-generated method stub
 		byte[] byteRow = new byte[4];
 		for (int r = 1; r < 4; r++) {
 			for (int c = 0; c < 4; c++)
@@ -210,9 +166,7 @@ public class Transmit implements RijndaelMethods {
 
 	// reference code
 	public byte[][] MixColumns(byte[][] s) {
-		// Rijndael uses a characteristic 2 finite field with 256 elements,
-		// which can also be called the Galois field GF(28).
-		// It employs a reducing polynomial for multiplication
+
 		int[] sp = new int[4];
 		byte b02 = (byte) 0x02, b03 = (byte) 0x03;
 		for (int c = 0; c < 4; c++) {
@@ -249,7 +203,6 @@ public class Transmit implements RijndaelMethods {
 
 	// implemented by Jannie and Malvika
 	public void KeyExpansion() {
-		// changes the key for each round
 
 		byte[][] finishedKey = new byte[4][4];
 
