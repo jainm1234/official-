@@ -1,0 +1,18 @@
+public class Receive {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		String text = "tester for code";
+		String key = "d3nw7me9tn4m17n4";
+		System.out.println(text);
+		System.out.println("\n\n\n");
+
+		Transmit test = new Transmit();
+
+		byte[] enc = test.encrypt(text.getBytes(), key.getBytes());
+		System.out.println(new String(enc));
+
+	}
+
+}
